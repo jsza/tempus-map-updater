@@ -56,11 +56,7 @@ class MapUpdater(object):
 
             if self.deleteIfNotPresent and delete:
                 for fp in delete:
-                    try:
-                        fp.remove()
-                    # file does not exist
-                    except OSError:
-                        pass
+                    fp.remove()
 
                 print 'Deleted {} map(s) not present at remote server:'.format(len(delete))
                 print ', '.join([x.basename() for x in delete])
