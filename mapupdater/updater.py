@@ -16,12 +16,13 @@ from twisted.web.error import Error
 
 
 class MapUpdater(object):
-    def __init__(self, mapsPath, fetchURL):
+    def __init__(self, mapsPath, fetchURL, deleteIfNotPresent):
         assert isinstance(mapsPath, str) and len(mapsPath)
         assert isinstance(fetchURL, str) and len(fetchURL)
         self.mapsPath = FilePath(mapsPath)
         self.downloadTempPath = self.mapsPath.child('mapupdater')
         self.fetchURL = URLPath.fromString(fetchURL)
+        self.deleteIfNotPresent = deleteIfNotPresent
         self.semaphore = DeferredSemaphore(1)
         self.downloadSemaphore = DeferredSemaphore(4)
 
@@ -53,13 +54,13 @@ class MapUpdater(object):
                 if filename not in remoteMapsLower:
                     delete.append(p)
 
-            if delete:
-                deletePath = self.mapsPath.child('deletez')
-                if not deletePath.exists():
-                    deletePath.makedirs()
-
+            if self.deleteIfNotPresent and delete:
                 for fp in delete:
-                    fp.moveTo(deletePath.child(fp.basename()))
+                    try:
+                        fp.remove()
+                    # file does not exist
+                    except OSError:
+                        pass
 
                 print 'Deleted {} map(s) not present at remote server:'.format(len(delete))
                 print ', '.join([x.basename() for x in delete])
@@ -163,8 +164,9 @@ class WebListUpdater(MapUpdater):
 
 
 class S3Updater(MapUpdater):
-    def __init__(self, mapsPath, fetchURL, listURL, keyPrefix):
-        MapUpdater.__init__(self, mapsPath, fetchURL)
+    def __init__(self, mapsPath, fetchURL, deleteIfNotPresent, listURL,
+            keyPrefix):
+        MapUpdater.__init__(self, mapsPath, fetchURL, deleteIfNotPresent)
         assert isinstance(listURL, str) and len(listURL)
         assert isinstance(keyPrefix, str) and len(keyPrefix)
         self.listURL = URLPath.fromString(listURL)

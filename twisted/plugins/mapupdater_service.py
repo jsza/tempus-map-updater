@@ -41,6 +41,10 @@ class Options(usage.Options):
         , ['maps-path', None, None, 'Path to maps.']
         ])
 
+    optFlags = (
+        [ ['delete', None, 'Delete maps if not present on remote server.']
+        ])
+
     subCommands = (
         [ ['s3', None, S3Options, 'S3 updater.']
         , ['weblist', None, WebListOptions, 'Web list updater.']
@@ -59,12 +63,14 @@ class MapUpdaterServiceMaker(object):
             subOptions = options.subOptions
             mapUpdater = S3Updater(options['maps-path'],
                                    subOptions['fetch-url'],
+                                   options['delete'],
                                    subOptions['list-url'],
                                    subOptions['key-prefix'])
         elif options.subCommand == 'weblist':
             subOptions = options.subOptions
             mapUpdater = WebListUpdater(options['maps-path'],
-                                    subOptions['fetch-url'])
+                                        subOptions['fetch-url'],
+                                        options['delete'])
         else:
             print options
             raise ValueError('Sub-command must be "s3" or "weblist".')
