@@ -9,6 +9,8 @@ setup(
         "autobahn == 0.13.0",
         "twisted >= 15.0.0",
         "treq",
+        "bs4",
+        "html5lib",
         "service_identity >= 14.0.0"
     ]
 )

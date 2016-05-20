@@ -3,6 +3,8 @@ import treq
 from StringIO import StringIO
 from xml.etree import ElementTree
 
+from bs4 import BeautifulSoup
+
 from twisted.internet.defer import (
     inlineCallbacks, DeferredSemaphore, gatherResults, returnValue)
 from twisted.internet.utils import getProcessOutputAndValue
@@ -21,6 +23,7 @@ class MapUpdater(object):
         self.downloadTempPath = self.mapsPath.child('mapupdater')
         self.fetchURL = URLPath.fromString(fetchURL)
         self.semaphore = DeferredSemaphore(1)
+        self.downloadSemaphore = DeferredSemaphore(4)
 
 
     def checkMaps(self, *a, **kw):
@@ -32,6 +35,8 @@ class MapUpdater(object):
 
     def _checkMaps(self, forceDownloadMaps=None):
         def _cb(remoteMaps):
+            if forceDownloadMaps:
+                remoteMaps = list(set(remoteMaps + forceDownloadMaps))
             remoteMapsLower = [f.lower() for f in remoteMaps]
             ourMaps = filter(lambda p: not p.isdir() and p.path.endswith('.bsp'),
                              self.mapsPath.children())
@@ -63,6 +68,7 @@ class MapUpdater(object):
                 print 'Fetching {} map(s)'.format(len(missing))
 
                 def _allFinished(ignored):
+                    self.mapsPath.child('tempus_map_updater_run_once').touch()
                     print 'Now up-to-date.'
 
                 ds = []
@@ -70,10 +76,14 @@ class MapUpdater(object):
                     ds.append(self.fetchMap(filename))
                 return gatherResults(ds).addCallback(_allFinished)
 
-        return self.getMapList(forceDownloadMaps).addCallback(_cb)
+        return self.getMapList().addCallback(_cb)
 
 
-    def fetchMap(self, filename):
+    def fetchMap(self, *a, **kw):
+        return self.downloadSemaphore.run(self._fetchMap, *a, **kw)
+
+
+    def _fetchMap(self, filename):
         downloadTempPath = self.downloadTempPath
         if not downloadTempPath.exists():
             downloadTempPath.makedirs()
@@ -125,8 +135,30 @@ class MapUpdater(object):
 
 
 
-# class FTPListUpdater(MapUpdater):
-#     def __init__()
+class WebListUpdater(MapUpdater):
+    @inlineCallbacks
+    def getMapList(self):
+        response = yield treq.get(str(self.fetchURL))
+        html = yield response.text()
+
+        if response.code >= 400:
+            print html
+            raise Error(response.code)
+
+        remoteMaps = self.parseMapList(html)
+        returnValue(remoteMaps)
+
+
+    def parseMapList(self, html):
+        soup = BeautifulSoup(html, 'html5lib')
+
+        remoteMaps = []
+        for link in soup.find_all('a'):
+            href = link.get('href')
+            if href.endswith('bsp.bz2') and '/' not in href:
+                remoteMaps.append(href.encode())
+
+        return remoteMaps
 
 
 
@@ -140,20 +172,15 @@ class S3Updater(MapUpdater):
 
 
     @inlineCallbacks
-    def getMapList(self, forceDownloadMaps):
+    def getMapList(self):
         response = yield treq.get(str(self.listURL))
         xml = yield response.text()
 
-        # Some server-side error
         if response.code >= 400:
             print xml
-            raise Error(400)
+            raise Error(response.code)
 
         remoteMaps = self.parseMapList(xml)
-
-        if forceDownloadMaps:
-            remoteMaps = list(set(remoteMaps + forceDownloadMaps))
-
         returnValue(remoteMaps)
 
 

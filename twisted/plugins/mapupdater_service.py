@@ -14,7 +14,7 @@ from twisted.python import usage
 from zope.interface import implements
 
 from mapupdater.component import MapUpdaterComponent
-from mapupdater.updater import S3Updater
+from mapupdater.updater import S3Updater, WebListUpdater
 
 
 
@@ -27,8 +27,10 @@ class S3Options(usage.Options):
 
 
 
-class FTPOptions(usage.Options):
-    optParameters = []
+class WebListOptions(usage.Options):
+    optParameters = (
+        [ ['fetch-url', None, None, 'URL to fetch maps from.']
+        ])
 
 
 
@@ -41,6 +43,7 @@ class Options(usage.Options):
 
     subCommands = (
         [ ['s3', None, S3Options, 'S3 updater.']
+        , ['weblist', None, WebListOptions, 'Web list updater.']
         ])
 
 
@@ -58,15 +61,13 @@ class MapUpdaterServiceMaker(object):
                                    subOptions['fetch-url'],
                                    subOptions['list-url'],
                                    subOptions['key-prefix'])
-        elif options.subCommand == 'ftp':
+        elif options.subCommand == 'weblist':
             subOptions = options.subOptions
-            mapUpdater = S3Updater(options['maps-path'],
-                                   subOptions['fetch-url'],
-                                   subOptions['list-url'],
-                                   subOptions['key-prefix'])
+            mapUpdater = WebListUpdater(options['maps-path'],
+                                    subOptions['fetch-url'])
         else:
             print options
-            raise ValueError('Sub-command must be "s3" or "ftp".')
+            raise ValueError('Sub-command must be "s3" or "weblist".')
 
         s = MultiService()
 
