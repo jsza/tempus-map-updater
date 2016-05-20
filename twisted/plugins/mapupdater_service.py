@@ -95,7 +95,7 @@ class MapUpdaterServiceMaker(object):
                 # the app component could not be created .. fatal
                 print(e)
             else:
-                session.debug_app = False
+                session.debug_app = True
                 return session
 
         sessionFactory = ApplicationSessionFactory(
