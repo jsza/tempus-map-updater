@@ -5,13 +5,10 @@ from autobahn.websocket.protocol import parseWsUrl
 from twisted.application.internet import ClientService
 from twisted.internet import reactor
 from twisted.internet.task import LoopingCall
-from twisted.internet.defer import (
-    inlineCallbacks, DeferredSemaphore, gatherResults)
 from twisted.internet.endpoints import HostnameEndpoint, wrapClientTLS
 from twisted.internet.ssl import optionsForClientTLS
 
-from twisted.application.service import IServiceMaker, MultiService, Service
-from twisted.internet import reactor
+from twisted.application.service import IServiceMaker, MultiService
 from twisted.plugin import IPlugin
 from twisted.python import usage
 from zope.interface import implements
