@@ -141,12 +141,17 @@ class MapUpdater(object):
     def addLevelSounds(self, mapPaths):
         content = FilePath(mapupdater.__file__).sibling(
             'tf_level_sounds.txt').getContent()
+        added = []
         for p in mapPaths:
             mapName = p.basename()[:-4]
             p2 = p.sibling('{}_level_sounds.txt'.format(mapName))
             if p2.exists() and p2.getContent() == content:
                 continue
+            added.append(mapName)
             p2.setContent(content)
+        if added:
+            print 'Added level sounds for:'
+            print ', '.join(added)
 
 
 
