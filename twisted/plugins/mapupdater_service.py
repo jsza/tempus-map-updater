@@ -43,6 +43,7 @@ class Options(usage.Options):
 
     optFlags = (
         [ ['delete', None, 'Delete maps if not present on remote server.']
+        , ['tf-level-sounds', None, 'Ensure level sounds file exists for maps.']
         ])
 
     subCommands = (
@@ -64,13 +65,15 @@ class MapUpdaterServiceMaker(object):
             mapUpdater = S3Updater(options['maps-path'],
                                    subOptions['fetch-url'],
                                    options['delete'],
+                                   options['tf-level-sounds'],
                                    subOptions['list-url'],
                                    subOptions['key-prefix'])
         elif options.subCommand == 'weblist':
             subOptions = options.subOptions
             mapUpdater = WebListUpdater(options['maps-path'],
                                         subOptions['fetch-url'],
-                                        options['delete'])
+                                        options['delete'],
+                                        options['tf-level-sounds'])
         else:
             print options
             raise ValueError('Sub-command must be "s3" or "weblist".')

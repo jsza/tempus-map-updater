@@ -1,3 +1,4 @@
+import mapupdater
 import treq
 
 from StringIO import StringIO
@@ -16,13 +17,14 @@ from twisted.web.error import Error
 
 
 class MapUpdater(object):
-    def __init__(self, mapsPath, fetchURL, deleteIfNotPresent):
+    def __init__(self, mapsPath, fetchURL, deleteIfNotPresent, tfLevelSounds):
         assert isinstance(mapsPath, str) and len(mapsPath)
         assert isinstance(fetchURL, str) and len(fetchURL)
         self.mapsPath = FilePath(mapsPath)
         self.downloadTempPath = self.mapsPath.child('mapupdater')
         self.fetchURL = URLPath.fromString(fetchURL)
         self.deleteIfNotPresent = deleteIfNotPresent
+        self.tfLevelSounds = tfLevelSounds
         self.semaphore = DeferredSemaphore(1)
         self.downloadSemaphore = DeferredSemaphore(4)
 
@@ -66,12 +68,17 @@ class MapUpdater(object):
 
                 def _allFinished(ignored):
                     self.mapsPath.child('tempus_map_updater_run_once').touch()
+                    if self.tfLevelSounds:
+                        self.addLevelSounds(ourMaps)
                     print 'Now up-to-date.'
 
                 ds = []
                 for filename in missing:
                     ds.append(self.fetchMap(filename))
                 return gatherResults(ds).addCallback(_allFinished)
+            elif self.tfLevelSounds:
+                self.addLevelSounds(ourMaps)
+
 
         return self.getMapList().addCallback(_cb)
 
@@ -131,6 +138,17 @@ class MapUpdater(object):
         raise NotImplementedError('Subclasses must override this method.')
 
 
+    def addLevelSounds(self, mapPaths):
+        content = FilePath(mapupdater.__file__).sibling(
+            'tf_level_sounds.txt').getContent()
+        for p in mapPaths:
+            mapName = p.basename()[:-4]
+            p2 = p.sibling('{}_level_sounds.txt'.format(mapName))
+            if p2.exists() and p2.getContent() == content:
+                continue
+            p2.setContent(content)
+
+
 
 class WebListUpdater(MapUpdater):
     @inlineCallbacks
@@ -160,8 +178,8 @@ class WebListUpdater(MapUpdater):
 
 
 class S3Updater(MapUpdater):
-    def __init__(self, mapsPath, fetchURL, deleteIfNotPresent, listURL,
-            keyPrefix):
+    def __init__(self, mapsPath, fetchURL, deleteIfNotPresent, tfLevelSounds,
+            listURL, keyPrefix):
         MapUpdater.__init__(self, mapsPath, fetchURL, deleteIfNotPresent)
         assert isinstance(listURL, str) and len(listURL)
         assert isinstance(keyPrefix, str) and len(keyPrefix)
