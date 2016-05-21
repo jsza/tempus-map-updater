@@ -12,5 +12,6 @@ setup(
         "bs4",
         "html5lib",
         "service_identity >= 14.0.0"
-    ]
+    ],
+    include_package_data=True
 )
