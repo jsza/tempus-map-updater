@@ -100,11 +100,11 @@ class MapUpdater(object):
                 extractedPath = tp.sibling(tp.basename().replace('.bz2', ''))
                 extractedPath.moveTo(
                     self.mapsPath.child(tp.basename().replace('.bz2', '')))
-                try:
-                    tp.remove()
-                # File already gone
-                except OSError:
-                    pass
+                # try:
+                #     tp.remove()
+                # # File already gone
+                # except OSError:
+                #     pass
                 print 'Finished downloading {}'.format(fn)
 
             def _finished(ignored):
