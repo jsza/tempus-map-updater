@@ -185,7 +185,8 @@ class WebListUpdater(MapUpdater):
 class S3Updater(MapUpdater):
     def __init__(self, mapsPath, fetchURL, deleteIfNotPresent, tfLevelSounds,
             listURL, keyPrefix):
-        MapUpdater.__init__(self, mapsPath, fetchURL, deleteIfNotPresent)
+        MapUpdater.__init__(self, mapsPath, fetchURL, deleteIfNotPresent,
+                            tfLevelSounds)
         assert isinstance(listURL, str) and len(listURL)
         assert isinstance(keyPrefix, str) and len(keyPrefix)
         self.listURL = URLPath.fromString(listURL)
