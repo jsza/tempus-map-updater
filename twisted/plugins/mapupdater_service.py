@@ -108,6 +108,8 @@ class MapUpdaterServiceMaker(object):
         transportFactory = WampWebSocketClientFactory(
             sessionFactory, url=url)
         transportFactory.noisy = False
+        transportFactory.autoPingInterval = 30
+        transportFactory.autoPingTimeout = 30
 
         isSecure, host, port, resource, path, params = parseWsUrl(url)
 
