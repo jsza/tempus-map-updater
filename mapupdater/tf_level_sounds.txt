@@ -5,7 +5,7 @@
         "pitch"       "PITCH_NORM"
         "soundlevel"  "SNDLVL_NONE"
         "volume"      "VOL_NORM"
-        "wave"        "vo/null.wav"
+        "wave"        "vo/null.mp3"
 }
 
 // Disable bot resupply sound
@@ -14,7 +14,7 @@
         "channel"     "CHAN_ITEM"
         "soundlevel"  "SNDLVL_75dB"
         "volume"      "VOL_NORM"
-        "wave"        "vo/null.wav"
+        "wave"        "vo/null.mp3"
 }
 
 // Demoman cancel pain severe 01
@@ -24,7 +24,7 @@
         "pitch"       "PITCH_NORM"
         "soundlevel"  "SNDLVL_NONE"
         "volume"      "VOL_NORM"
-        "wave"        "vo/null.wav"
+        "wave"        "vo/null.mp3"
 }
 
 // Demoman cancel pain severe 02
@@ -34,7 +34,7 @@
         "pitch"       "PITCH_NORM"
         "soundlevel"  "SNDLVL_NONE"
         "volume"      "VOL_NORM"
-        "wave"        "vo/null.wav"
+        "wave"        "vo/null.mp3"
 }
 
 // Demoman cancel pain severe 03
@@ -44,7 +44,7 @@
         "pitch"       "PITCH_NORM"
         "soundlevel"  "SNDLVL_NONE"
         "volume"      "VOL_NORM"
-        "wave"        "vo/null.wav"
+        "wave"        "vo/null.mp3"
 }
 
 // Demoman cancel pain severe 04
@@ -54,7 +54,7 @@
         "pitch"       "PITCH_NORM"
         "soundlevel"  "SNDLVL_NONE"
         "volume"      "VOL_NORM"
-        "wave"        "vo/null.wav"
+        "wave"        "vo/null.mp3"
 }
 
 // Demoman stickie beep cancel
@@ -63,7 +63,7 @@
         "channel"       "CHAN_WEAPON"
         "soundlevel"    "SNDLVL_NONE"
         "volume"        "VOL_NORM"
-        "wave"          "vo/null.wav"
+        "wave"          "vo/null.mp3"
 }
 
 // Soldier cancel pain severe 01
@@ -73,7 +73,7 @@
         "pitch"       "PITCH_NORM"
         "soundlevel"  "SNDLVL_NONE"
         "volume"      "VOL_NORM"
-        "wave"        "vo/null.wav"
+        "wave"        "vo/null.mp3"
 }
 
 // Soldier cancel pain severe 02
@@ -83,7 +83,7 @@
         "pitch"       "PITCH_NORM"
         "soundlevel"  "SNDLVL_NONE"
         "volume"      "VOL_NORM"
-        "wave"        "vo/null.wav"
+        "wave"        "vo/null.mp3"
 }
 
 // Soldier cancel pain severe 03
@@ -93,7 +93,7 @@
         "pitch"       "PITCH_NORM"
         "soundlevel"  "SNDLVL_NONE"
         "volume"      "VOL_NORM"
-        "wave"        "vo/null.wav"
+        "wave"        "vo/null.mp3"
 }
 
 // Soldier cancel pain severe 04
@@ -103,7 +103,7 @@
         "pitch"       "PITCH_NORM"
         "soundlevel"  "SNDLVL_NONE"
         "volume"      "VOL_NORM"
-        "wave"        "vo/null.wav"
+        "wave"        "vo/null.mp3"
 }
 
 // Soldier cancel pain severe 05
@@ -113,7 +113,7 @@
         "pitch"       "PITCH_NORM"
         "soundlevel"  "SNDLVL_NONE"
         "volume"      "VOL_NORM"
-        "wave"        "vo/null.wav"
+        "wave"        "vo/null.mp3"
 }
 
 // Soldier cancel pain severe 06
@@ -123,5 +123,15 @@
         "pitch"       "PITCH_NORM"
         "soundlevel"  "SNDLVL_NONE"
         "volume"      "VOL_NORM"
-        "wave"        "vo/null.wav"
+        "wave"        "vo/null.mp3"
+}
+
+// Player cancel fall damage
+"Player.FallDamage"
+{
+        "channel"     "CHAN_ITEM"
+        "pitch"       "PITCH_NORM"
+        "soundlevel"  "SNDLVL_NONE"
+        "volume"      "VOL_NORM"
+        "wave"        "vo/null.mp3"
 }
